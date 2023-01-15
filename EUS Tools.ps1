@@ -8,16 +8,13 @@ Inital release
 Version 1.1
 Improved the erors message reports
 
-Version 1.2
-Removed the option to connect without MFA
-Update the Exchange connection to V3
-
 #>
 #----------------------------------------------
 # Generated Form Function
 #----------------------------------------------
-function main_form {
-    #----------------------------------------------
+function Show-tabs1_psf {
+
+	#----------------------------------------------
 	#region Import the Assemblies
 	#----------------------------------------------
 	[void][reflection.assembly]::Load('System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089')
@@ -44,6 +41,8 @@ function main_form {
 	$Tab1_DisplayDate = New-Object 'system.Windows.Forms.Label'
 	$Tab1_DisplayDateReults = New-Object 'system.Windows.Forms.Label'
 	$tabpage2 = New-Object 'System.Windows.Forms.TabPage'
+	$Tab2_ConnectButton = New-Object 'system.Windows.Forms.Button'
+	$Tab2_MFACheckBox = new-object 'System.Windows.Forms.checkbox'
 	$Tab2_ConnectionStatus = New-Object 'system.Windows.Forms.Label'
 	$Tab2_StatusUpdate = New-Object 'system.Windows.Forms.Label'
 	$Tab2_DisplayName = New-Object 'system.Windows.Forms.Label'
@@ -75,6 +74,8 @@ function main_form {
 	$Tab4_SearchButton = New-Object 'system.Windows.Forms.Button'
 	$Tab4_StatusUpdate = New-Object 'system.Windows.Forms.Label'
 	$tabpage5 = New-Object 'System.Windows.Forms.TabPage'
+	$Tab5_ConnectButton = New-Object 'system.Windows.Forms.Button'
+	$Tab5_MFACheckBox = new-object 'System.Windows.Forms.checkbox'
 	$Tab5_ConnectionStatus = New-Object 'system.Windows.Forms.Label'
 	$tab5_DisplayNameLabel = New-Object 'system.Windows.Forms.Label'
 	$tab5_DisplayNameTextBox = New-Object 'system.Windows.Forms.TextBox'
@@ -116,7 +117,7 @@ function main_form {
 	# User Generated Script
 	#----------------------------------------------
 	
-	$str001 = "Trustwave EUS Tools Version 1.2"
+	$str001 = "Trustwave EUS Tools Version 1.1"
 	$str002 = "Connect to Exchange Online"
 	$str003 = "Use MFA"
 	$str004 = "Connection Status:"
@@ -234,6 +235,29 @@ function main_form {
 		Check_password_Expirtaion
 	}
 
+
+# Tab2 click on the connect button
+	$Tab2_ConnectButton_Click={
+		if ($Tab2_StatusUpdate.ForeColor -ne $str055)
+		{
+			if ($Tab2_MFACheckBox.Checked)
+    		{
+        		MFA
+	    	}
+    		else
+	    	{
+        		Non_MFA
+    		}  
+		}
+		$tabpage2.Controls.Add($Tab2_DisplayName)
+		$tabpage2.Controls.Add($Tab2_DisplayNameTextBox)
+		$tabpage2.Controls.Add($Tab2_ExternalEmailAddress)
+		$tabpage2.Controls.Add($Tab2_ExternalEmailAddressTextBox)
+		$tabpage2.Controls.Add($Tab2_InternalEmailAddress)
+		$tabpage2.Controls.Add($Tab2_InternalEmailAddressTextBox)
+		$tabpage2.Controls.Add($Tab2_HideFromAddressLists_CheckBox)
+		$tabpage2.Controls.Add($Tab2_ApplyButton)
+	}
 
 # Tab2 click on the apply button
 	$Tab2_ApplyButton_Click={
@@ -388,7 +412,6 @@ function main_form {
 		#Remove all event handlers from the controls
 		try
 		{
-			Disconnect-ExchangeOnline -Confirm:$false
 			$buttonNext.remove_Click($buttonNext_Click)
 			$buttonPrev.remove_Click($buttonPrev_Click)
 			$buttonCheck.remove_Click($buttonCheck_Click)
@@ -1753,17 +1776,27 @@ P///8AAAAAAAAAAAAAAAAD////8AAAAAMAAAAAAAAAA/////4AAAAD+AAAAAAAAAP/////8AAAA/
 	$tabpage2.Text = $str060
 	$tabpage2.UseVisualStyleBackColor = $True
 	#
+	$Tab2_ConnectButton.text = $str002
+	$Tab2_ConnectButton.Size = new-object System.Drawing.Size(200,30)
+	$Tab2_ConnectButton.location = New-Object System.Drawing.Point(20,25)
+	$Tab2_ConnectButton.add_Click($Tab2_ConnectButton_Click)
+	#
+	$Tab2_MFACheckBox.Location = new-object System.Drawing.Size(280,20)
+	$Tab2_MFACheckBox.Size = new-object System.Drawing.Size(180,50)
+	$Tab2_MFACheckBox.Text = $str003
+	$Tab2_MFACheckBox.Checked  = $true
+	#	
 	$Tab2_ConnectionStatus.text = $str004
 	$Tab2_ConnectionStatus.AutoSize = $true
+	$Tab2_ConnectionStatus.location = New-Object System.Drawing.Point(100,70)
 	$Tab2_ConnectionStatus.Size = new-object System.Drawing.Size(25,10)
-	$Tab2_ConnectionStatus.location = New-Object System.Drawing.Point(100,30)
 	#
-	$Tab2_StatusUpdate.ForeColor = $str055
-    $Tab2_StatusUpdate.Text = "$str006"
+	$Tab2_StatusUpdate.ForeColor = $str053
+	$Tab2_StatusUpdate.Text = $str005
 	$Tab2_StatusUpdate.AutoSize = $true
+	$Tab2_StatusUpdate.location = New-Object System.Drawing.Point(200,70)
 	$Tab2_StatusUpdate.Size = new-object System.Drawing.Size(25,10)
-	$Tab2_StatusUpdate.location = New-Object System.Drawing.Point(200,30)
-    #
+	#
 	$Tab2_DisplayName.text = $str007
 	$Tab2_DisplayName.AutoSize = $true
 	$Tab2_DisplayName.location = New-Object System.Drawing.Point(20,70)
@@ -1799,16 +1832,7 @@ P///8AAAAAAAAAAAAAAAAD////8AAAAAMAAAAAAAAAA/////4AAAAD+AAAAAAAAAP/////8AAAA/
 	$Tab2_ApplyButton.Size = new-object System.Drawing.Size(102,30)
 	$Tab2_ApplyButton.location = New-Object System.Drawing.Point(20,240)
 	$Tab2_ApplyButton.add_Click($Tab2_ApplyButton_Click)
-	#
-	$tabpage2.Controls.Add($Tab2_DisplayName)
-	$tabpage2.Controls.Add($Tab2_DisplayNameTextBox)
-	$tabpage2.Controls.Add($Tab2_ExternalEmailAddress)
-	$tabpage2.Controls.Add($Tab2_ExternalEmailAddressTextBox)
-	$tabpage2.Controls.Add($Tab2_InternalEmailAddress)
-	$tabpage2.Controls.Add($Tab2_InternalEmailAddressTextBox)
-	$tabpage2.Controls.Add($Tab2_HideFromAddressLists_CheckBox)
-	$tabpage2.Controls.Add($Tab2_ApplyButton)
-    # End Of Tab2
+	# End Of Tab2
 	#
 	# Tab3 ***** Modify Users Aliases
 	#
@@ -1940,24 +1964,27 @@ P///8AAAAAAAAAAAAAAAAD////8AAAAAMAAAAAAAAAA/////4AAAAD+AAAAAAAAAP/////8AAAA/
 	#
 	# Groups
 	#
+	$Tab5_ConnectButton.text = $str002
+	$Tab5_ConnectButton.Size = new-object System.Drawing.Size(200,30)
+	$Tab5_ConnectButton.location = New-Object System.Drawing.Point(20,25)
+	$Tab5_ConnectButton.add_Click($Tab5_ConnectButton_Click)
+	#
+	$Tab5_MFACheckBox.Location = new-object System.Drawing.Size(280,20)
+	$Tab5_MFACheckBox.Size = new-object System.Drawing.Size(180,50)
+	$Tab5_MFACheckBox.Text = $str003
+	$Tab5_MFACheckBox.Checked  = $true
+	#	
 	$Tab5_ConnectionStatus.text = $str004
 	$Tab5_ConnectionStatus.AutoSize = $true
-	$Tab5_ConnectionStatus.location = New-Object System.Drawing.Point(100,30)
+	$Tab5_ConnectionStatus.location = New-Object System.Drawing.Point(100,70)
 	$Tab5_ConnectionStatus.Size = new-object System.Drawing.Size(25,10)
 	#
-	$Tab5_StatusUpdate.ForeColor = $str055
-	$Tab5_StatusUpdate.Text = $str006
+	$Tab5_StatusUpdate.ForeColor = $str053
+	$Tab5_StatusUpdate.Text = $str005
 	$Tab5_StatusUpdate.AutoSize = $true
-	$Tab5_StatusUpdate.location = New-Object System.Drawing.Point(200,30)
+	$Tab5_StatusUpdate.location = New-Object System.Drawing.Point(200,70)
 	$Tab5_StatusUpdate.Size = new-object System.Drawing.Size(25,10)
-	#
-	$tabpage5.Controls.Remove($Tab5_ConnectButton)
-	$tabpage5.Controls.Remove($Tab5_MFACheckBox)
-	$tabpage5.Controls.Add($tab5_GroupTypeLabel)
-	$tabpage5.Controls.Add($tab5_GroupType)
-	$tabpage5.Controls.Add($tab5_DisplayNameLabel)
-	$tabpage5.Controls.Add($tab5_DisplayNameTextBox)
-	getdomains
+	TestConnection
 	#
 	$tab5_DisplayNameLabel.text = $str007
 	$tab5_DisplayNameLabel.AutoSize = $true
@@ -2127,43 +2154,96 @@ P///8AAAAAAAAAAAAAAAAD////8AAAAAMAAAAAAAAAA/////4AAAAD+AAAAAAAAAP/////8AAAA/
 
 #Global Functions
 
-Function Connect()
+
+function MFA () 
 {
-		$exoerr = "clean"
-		$EXOcheck = Get-InstalledModule ExchangeOnlineManagement
-		if ($EXOcheck.Version.ToString() -match "^[0-2](\.[0-9]+){0,2}$")
-		{
-			Update-Module -Name ExchangeOnlineManagement
-		}
-		try
-		{
-			Import-Module ExchangeOnlineManagement -EA Stop
-		}
-		catch
-		{
-			Install-Module ExchangeOnlineManagement
-		}
-		try
-		{
-    		Connect-ExchangeOnline -ErrorAction Stop -ErrorVariable exoerr
-		}
-		catch
-		{
-        	if ($exoerr -match "User canceled authentication.")
-			{
-            	[System.Windows.Forms.MessageBox]::Show("User Canceled Authentication, Please Try again", "Error", 0, 
-            	[System.Windows.Forms.MessageBoxIcon]::Exclamation)
-				Connect
-			}
+    if (test-path ((Get-ChildItem -Path $($env:LOCALAPPDATA+"\Apps\2.0\") -Filter CreateExoPSSession.ps1 -Recurse ).FullName | Select-Object -Last 1))
+    {
+        try
+        {
+            $MFAExchangeModule = ((Get-ChildItem -Path $($env:LOCALAPPDATA+"\Apps\2.0\") -Filter CreateExoPSSession.ps1 -Recurse ).FullName | Select-Object -Last 1)  
+            If ($MFAExchangeModule -eq $null)
+            {
+                write-host ("Please install Exchange Online MFA Module.")
+            }
             else
-			{
-                $err = $exoerr
-                [System.Windows.Forms.MessageBox]::Show("Could not connect to Exchange Online Powershell, Error: $exoerr", "Error", 0, 
-                [System.Windows.Forms.MessageBoxIcon]::Exclamation)
-                Exit 1
+            {
+                ."$MFAExchangeModule"
+                $Tab2_StatusUpdate.Text = "Connecting"
+                $Tab2_StatusUpdate.Forecolor = $str054
+                Connect-EXOPSSession -WarningAction SilentlyContinue | Out-Null
             }
         }
+        catch
+        {
+            $MsgBoxError::Show($Str011, $str001, "OK", "Error")
+			MFA
+        }
+        TestConnection
+    }
+}
+
+
+function Non_MFA ()
+{
+    try 
+    {
+        $Tab2_StatusUpdate.Text = "Connecting"
+        $Tab2_StatusUpdate.Forecolor = $str054
+        $URL = "https://ps.outlook.com/powershell"
+        $UserCredential = Get-Credential -ErrorAction Continue
+        $EXOSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $URL -Credential $Credentials -Authentication Basic -AllowRedirection -Name "Exchange Online" -ErrorAction Stop
+        Import-PSSession $EXOSession -DisableNameChecking | Out-Null
+    }
+    catch
+    {
+        $MsgBoxError::Show($str011, $str001, "OK", "Error")
+		Non_MFA
+    }
+        TestConnection
+    }
+
+
+Function TestConnection()
+	{
+		$getsessions = Get-PSSession | Select-Object -Property State, ConfigurationName
+		if ($getsessions.State -eq 'Opened' -and $getsessions.ConfigurationName -eq 'Microsoft.Exchange')
+		{
+            $Tab2_StatusUpdate.ForeColor = $str055
+        	$Tab2_StatusUpdate.Text = "$str006"
+			$Tab5_StatusUpdate.ForeColor = $str055
+        	$Tab5_StatusUpdate.Text = "$str006"
+			$Tab2_ConnectionStatus.location = New-Object System.Drawing.Point(100,30)
+			$Tab2_StatusUpdate.location = New-Object System.Drawing.Point(200,30)
+			$Tab5_ConnectionStatus.location = New-Object System.Drawing.Point(100,30)
+			$Tab5_StatusUpdate.location = New-Object System.Drawing.Point(200,30)
+			$tabpage2.Controls.Remove($Tab2_ConnectButton)
+			$tabpage2.Controls.Remove($Tab2_MFACheckBox)
+			$tabpage5.Controls.Remove($Tab5_ConnectButton)
+			$tabpage5.Controls.Remove($Tab5_MFACheckBox)
+			$tabpage2.Controls.Add($Tab2_DisplayName)
+			$tabpage2.Controls.Add($Tab2_DisplayNameTextBox)
+			$tabpage2.Controls.Add($Tab2_ExternalEmailAddress)
+			$tabpage2.Controls.Add($Tab2_ExternalEmailAddressTextBox)
+			$tabpage2.Controls.Add($Tab2_InternalEmailAddress)
+			$tabpage2.Controls.Add($Tab2_InternalEmailAddressTextBox)
+			$tabpage2.Controls.Add($Tab2_HideFromAddressLists_CheckBox)
+			$tabpage2.Controls.Add($Tab2_ApplyButton)
+			$tabpage5.Controls.Add($tab5_GroupTypeLabel)
+			$tabpage5.Controls.Add($tab5_GroupType)
+			$tabpage5.Controls.Add($tab5_DisplayNameLabel)
+			$tabpage5.Controls.Add($tab5_DisplayNameTextBox)
+			getdomains
+		}
+		else
+    	{
+        	$Tab2_StatusUpdate.ForeColor = $str053
+        	$Tab2_StatusUpdate.Text = "$str005"
+			$Tab5_StatusUpdate.ForeColor = $str053
+        	$Tab5_StatusUpdate.Text = "$str005"
+		}
 	}
+
 
 # Tab 1 Functions
 
@@ -2687,6 +2767,5 @@ Function Create()
 	}
 }
 
-#main
-Connect
-main_form | Out-Null
+#Call the form
+Show-tabs1_psf | Out-Null
