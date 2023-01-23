@@ -119,7 +119,7 @@ function Show-tabs1_psf {
 	# User Generated Script
 	#----------------------------------------------
 	
-	$str001 = "Trustwave EUS Tools Version 1.2"
+	$str001 = "Trustwave EUS Tools Version 1.1"
 	$str002 = "Connect to Exchange Online"
 	$str004 = "Connection Status:"
 	$str005 = "Not Connected to Exchnage online"
